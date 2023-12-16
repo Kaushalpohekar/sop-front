@@ -1,0 +1,26 @@
+.footer {
+    margin-top: 6vh;
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    height:min-content;
+    width: 100%; 
+    background-color: #ff0600;
+    color: black;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-title{
+    text-align: center;
+    color: #3c3c3b;
+    font-size: 1.2rem;
+}
+
+.footer-link{
+    color: #fff;
+}
+
+.footer-link:hover{
+    color: #3c3c3b;
+}
