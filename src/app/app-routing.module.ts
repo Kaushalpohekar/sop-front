@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginLayoutComponent } from './login/login-layout/login-layout.component';
 import { LoginGuard } from './login/auth/login.guard';
 import { AuthGuard } from './login/auth/auth.guard';
+import { LayoutComponent } from './dashboard/layout/layout.component';
+import { ScreenLayoutComponent } from './screens/screen-layout/screen-layout.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,6 +14,22 @@ const routes: Routes = [
     // canActivate: [LoginGuard],
     children: [
       { path: '', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
+    ]
+  },
+  {
+    path: 'dashboard',
+    component: LayoutComponent,
+    // canActivate: [AuthGuard],
+    children: [
+      { path: '', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
+    ]
+  },
+  {
+    path: 'screens',
+    component: ScreenLayoutComponent,
+    // canActivate: [AuthGuard],
+    children: [
+      { path: '', loadChildren: () => import('./screens/screens.module').then(m => m.ScreensModule) },
     ]
   },
   { path: '**', redirectTo: 'login' }
