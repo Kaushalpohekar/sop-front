@@ -9,6 +9,9 @@ import { FooterComponent } from './layout/footer/footer.component';
 import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AddScreenComponent } from './dashboard-Pages/add-screen/add-screen.component';
+import { MatCardModule } from '@angular/material/card';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 @NgModule({
@@ -16,14 +19,18 @@ import { MatButtonModule } from '@angular/material/button';
     OverviewComponent,
     LayoutComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    AddScreenComponent
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
     MatToolbarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule,
+    MatTabsModule,
+
   ]
 })
 export class DashboardModule { }

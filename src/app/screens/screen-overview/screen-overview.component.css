@@ -1,0 +1,13 @@
+
+.cover-card{
+    border-radius: 16px;
+}
+.main-card{
+    background-color:#F08080;
+    border-radius: 16px;
+}
+.sub-card{
+    background: radial-gradient(circle, #F08080, #87CEEB);
+    border-radius: 16px;
+
+}

@@ -4,6 +4,7 @@ import { OverviewComponent } from './overview/overview.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: OverviewComponent},
+  
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
 
