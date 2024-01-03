@@ -4,7 +4,6 @@ import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,12 +20,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar:MatSnackBar
+    private snackBar: MatSnackBar
   ) {}
-
-  submit(){
-    
-  }
 
   getErrorMessage() {
     if (this.email.hasError('required')) {
@@ -44,9 +39,37 @@ export class LoginComponent {
       ? 'Password should be at least 8 characters long'
       : '';
   }
-  
 
-  redirectUser() {
-    this.router.navigate(['dashboard']);
+  submit() {
+    if (this.email.valid && this.password.valid) {
+      this.loading = true;
+      this.loadingMessage = "Signing in...";
+
+      const loginData = {
+        userName: this.email.value,
+        password: this.password.value
+      };
+
+      this.authService.login(loginData).subscribe(
+        (response) => {
+          const token = response.token;
+          this.authService.setToken(token);
+          this.router.navigate(['dashboard']);
+          this.snackBar.open('Login successful!', 'Dismiss', {
+            duration: 2000
+          });
+        },
+        (error) => {
+          this.snackBar.open(
+            error.error.message || 'Login failed. Please try again.',
+            'Dismiss',
+            { duration: 2000 }
+          );
+          this.errorMessage = error.error.message || '';
+          this.loading = false;
+          this.loadingMessage = "Sign In";
+        }
+      );
+    }
   }
 }

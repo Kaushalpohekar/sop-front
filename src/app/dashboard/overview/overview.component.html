@@ -1,19 +1,31 @@
+<!-- overview.component.html -->
 <div class="content">
     <div class="container-fluid">
-        <h4 class="page-title mx-1">Admin Dashboard</h4>
-        <div class="row mx-1">
-            <mat-card>
-                <mat-card-content>
-                    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="vertical-tabs">
-                        <mat-tab label="Image">Content 1</mat-tab>
-                        <mat-tab label="Content">Content 2</mat-tab>
-                        <mat-tab label="Screen">Content 3</mat-tab>
-                        <mat-tab label="PDF">Content 4</mat-tab>
-                        <mat-tab label="PPT">Content 5</mat-tab>
-                        <mat-tab label="Video">Content 6</mat-tab>
-                    </mat-tab-group>
-                </mat-card-content>
-            </mat-card>
-        </div>
+      <h2 class="page-title m-1">Admin Dashboard</h2>
+      <div class="row mx-1">
+        <mat-card class="main-grp-card">
+          <mat-card-content>
+            <mat-tab-group [selectedIndex]="selectedTab" (selectedIndexChange)="tabChanged($event)"
+              mat-stretch-tabs="false" mat-align-tabs="start" class="vertical-tabs">
+              <mat-tab label="Image">
+                <app-image></app-image>
+              </mat-tab>
+              <mat-tab label="PDF">
+                <app-pdf></app-pdf>
+              </mat-tab>
+              <mat-tab label="PPT">
+                <app-ppt></app-ppt>
+              </mat-tab>
+              <mat-tab label="Video">
+                <app-video></app-video>
+              </mat-tab>
+              <mat-tab label="Screen">
+                <app-screen></app-screen>
+              </mat-tab>
+            </mat-tab-group>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
-</div>
+  </div>
+  

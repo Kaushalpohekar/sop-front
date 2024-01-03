@@ -29,7 +29,8 @@
               </mat-form-field>
             </div>
             
-            <button style="background-color:#3c3c3b; color: whitesmoke;" mat-raised-button class="full-width-button">Sign In</button>
+            <button  (click)="submit()" style="background-color:#3c3c3b; color: whitesmoke;" mat-raised-button class="full-width-button" [disabled]="loading">
+              {{ loadingMessage }}</button>
           </form>
       </div>
     </div>

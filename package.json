@@ -29,6 +29,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.7.1",
     "leaflet": "^1.7.1",
+    "ngx-extended-pdf-viewer": "^18.1.14",
     "ngx-mqtt": "^16.1.0",
     "papaparse": "^5.4.1",
     "rxjs": "~7.8.0",

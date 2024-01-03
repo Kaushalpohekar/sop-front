@@ -1,0 +1,50 @@
+<div class="container-fluid mt-1">
+  <div class="row">
+    <div class="col-md-12">
+      <h4 class="page-title m-1">Add Screen</h4>
+
+      <mat-form-field class="example-full-width " appearance="outline">
+        <mat-label>Screen Name</mat-label>
+        <input matInput [formControl]="screenName">
+      </mat-form-field>
+      <button mat-raised-button  class="m-3" color="warn" (click)="onAddScreen()" >Add Screen</button>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="screenData">
+
+        <!-- Position Column -->
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="ScreenName">
+          <th mat-header-cell *matHeaderCellDef> Screen Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.ScreenName}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="symbol">
+          <th mat-header-cell *matHeaderCellDef>Edit/Delete</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="warn">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="deleteScreen(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <!-- edit delete -->
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+
+  </div>
+</div>

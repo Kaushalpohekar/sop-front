@@ -1,0 +1,64 @@
+<!-- pdf.component.html -->
+<div class="container-fluid mt-1">
+  <div class="row fixed-row mt-2 row1">
+    <div class="col-md-2">
+      <p>Select Screen Number</p>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Select a screen</mat-label>
+        <mat-select [formControl]="screenControl" required>
+          <mat-option *ngFor="let screen of screens" [value]="screen">
+            {{ screen.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="screenControl.hasError('required')">Please choose a screen</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-2 offset-md-6">
+      <mat-slide-toggle [(ngModel)]="isChecked">
+        Screen is: {{isChecked ? 'On' : 'Off'}}
+      </mat-slide-toggle>
+    </div>
+  </div>
+
+  <div class="row scrollable-row row2">
+    <div class="col-md-2">
+      <p>Select PDFs</p>
+    </div>
+    <div class="col-md-10">
+      <!-- File Input for PDFs -->
+      <input #fileInputRef type="file" (change)="onFileSelected($event)" accept="application/pdf">
+    </div>
+
+    <!-- Display the selected files dynamically -->
+    <div class="file-grid" *ngIf="selectedFiles.length > 0 && !fileRemoved">
+      <div class="file-item" *ngFor="let file of selectedFiles; let i = index">
+        <!-- Display only the filename -->
+        <span class="filename">{{ file.name }}</span>
+        
+        <!-- Button to Remove File (moved to the right side) -->
+        <button mat-button color="warn" (click)="removeFile(i)">Remove File</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row fixed-row row3">
+    <div class="col-md-2">
+      <p>Select Screen Switching Interval (in Sec)</p>
+    </div>
+    <div class="col-md-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Interval</mat-label>
+        <input matInput type="number" [formControl]="intervalControl" required>
+        <mat-error *ngIf="intervalControl.hasError('required')">Please enter an interval</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-2 offset-md-6">
+      <button class="btn" mat-raised-button color="warn">Delete</button>
+      <button class="btn" mat-raised-button style="color: white; background-color: green;">Save</button>
+    </div>
+  </div>
+</div>

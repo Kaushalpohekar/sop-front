@@ -1,0 +1,49 @@
+/* Buttons */
+.btn {
+    margin: 2px;
+    margin-top: 60px;
+  }
+  
+  /* Image Grid */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .image-item {
+    position: relative;
+  }
+  
+  /* Selected Image */
+  .selected-image {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* General Styling */
+  .container-fluid {
+    height:fit-content; /* Set container height to viewport height */
+    overflow-y: hidden; /* Hide vertical scrollbar for the entire container */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fixed-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-top: 60px;
+    background-color: #fff; /* Adjust background color as needed */
+  }
+  
+  
+  
+  /* Add styling for the third row if needed */
+  .row3 {
+    background-color: #fff; /* Adjust background color as needed */
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+  

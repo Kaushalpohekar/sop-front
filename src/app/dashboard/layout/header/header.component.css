@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #eb3636;
+    background: linear-gradient(45deg, rgb(247, 247, 135),#ff0600);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     color: whitesmoke;
     display: flex;
@@ -10,7 +10,7 @@
     left: 0;
     right: 0;
     z-index: 100;
-    height: 60px;
+    height: 65px;
   }
   
   @media(max-width:500px){
