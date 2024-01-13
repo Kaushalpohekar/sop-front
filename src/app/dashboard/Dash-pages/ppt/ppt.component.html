@@ -7,8 +7,8 @@
         <mat-form-field appearance="outline">
           <mat-label>Select a screen</mat-label>
           <mat-select [formControl]="screenControl" required>
-            <mat-option *ngFor="let screen of screens" [value]="screen">
-              {{ screen.name }}
+            <mat-option *ngFor="let screen of ScreenOptions" [value]="screen.ScreenID">
+              {{ screen.ScreenName }}
             </mat-option>
           </mat-select>
           <mat-error *ngIf="screenControl.hasError('required')">Please choose a screen</mat-error>
@@ -57,7 +57,7 @@
   
       <div class="col-md-2 offset-md-6">
         <button class="btn" mat-raised-button color="warn">Delete</button>
-        <button class="btn" mat-raised-button style="color: white; background-color: green;">Save</button>
+        <button class="btn" mat-raised-button style="color: white; background-color: green;" (click)="logSelectedScreenAndInterval()">Save</button>
       </div>
     </div>
   </div>

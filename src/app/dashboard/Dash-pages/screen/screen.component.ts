@@ -22,6 +22,8 @@ export class ScreenComponent implements AfterViewInit, OnInit {
   dataSource = new MatTableDataSource<PeriodicElement>([]);
   displayedColumns: string[] = ['ScreenName', 'symbol'];
   screenData: any;
+  
+  ScreenOptions: any = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   screenName = new FormControl('', [Validators.required]);
 
@@ -34,11 +36,21 @@ export class ScreenComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
-
+  ScreenList(){
+    this.dashService.getScreenDetails().subscribe(
+      (getScreenDetails) =>{
+        this.ScreenOptions = getScreenDetails.getAllScreens; 
+      },
+      (error) =>{
+        console.log("Tasksheet Data is not Fetching!!", error);
+      }
+    );
+  }
   ScreenDetails() {
     this.dashService.getScreenDetails().subscribe(
       (screens) => {
         this.screenData = screens.getSOPData;
+        console.log(this.screenData);
       },
       (error) => {
         console.error('Error fetching screen details:', error);

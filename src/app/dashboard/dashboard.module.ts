@@ -26,6 +26,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { MatTableModule } from '@angular/material/table';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ScreenListComponent } from './Dash-pages/screen-list/screen-list.component';
 
 
 
@@ -41,7 +42,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     PdfComponent,
     PptComponent,
     VideoComponent,
-    ScreenComponent
+    ScreenComponent,
+    ScreenListComponent
   ],
   imports: [
     CommonModule,

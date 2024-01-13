@@ -1,6 +1,7 @@
 // ppt.component.ts
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { DashService } from '../../dash-service/dash.service';
 
 interface Screen {
   name: string;
@@ -11,21 +12,46 @@ interface Screen {
   templateUrl: './ppt.component.html',
   styleUrls: ['./ppt.component.css']
 })
-export class PptComponent {
+export class PptComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; // Reference to the file input element
 
   screenControl = new FormControl<Screen | null>(null, Validators.required);
   intervalControl = new FormControl<number | null>(null, Validators.required);
-  screens: Screen[] = [
-    { name: 'Screen 1' },
-    { name: 'Screen 2' },
-    { name: 'Screen 3' },
-    { name: 'Screen 4' },
-  ];
-
+  screens: Screen[] = [];
+  screenName!: string;
+  screenData: any;
+  ScreenOptions: any[] = [];
   isChecked = true;
   selectedFiles: File[] = [];
   fileRemoved = false;
+  constructor(private dashService: DashService) {}
+
+  ngOnInit() {
+    this.ScreenList();
+    this.ScreenDetails();
+  }
+  ScreenList() {
+    this.dashService.getScreenDetails().subscribe(
+      (getScreenDetails) => {
+        this.ScreenOptions = getScreenDetails.getSOPData;
+        console.log(this.ScreenOptions);
+      },
+      (error) => {
+        console.log("Screen Name Data is not Fetching!!", error);
+      }
+    );
+  }
+
+  ScreenDetails() {
+    this.dashService.getScreenDetails().subscribe(
+      (screens) => {
+        this.screenData = screens.getSOPData;
+      },
+      (error) => {
+        console.error('Error fetching screen details:', error);
+      }
+    );
+  }
 
   onFileSelected(event: Event): void {
     const files: FileList | null = (event.target as HTMLInputElement).files;
@@ -70,5 +96,12 @@ export class PptComponent {
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
+  }
+  logSelectedScreenAndInterval(): void {
+    const selectedScreen = this.screenControl.value?.name;
+    const selectedInterval = this.intervalControl.value;
+  
+    console.log('Selected Screen:', this.screenControl.value);
+    console.log('Selected Interval:', selectedInterval);
   }
 }
