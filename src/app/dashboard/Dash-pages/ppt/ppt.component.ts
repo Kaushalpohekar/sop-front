@@ -2,6 +2,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
+import { Subscription } from 'rxjs';
 
 interface Screen {
   name: string;
@@ -21,9 +22,13 @@ export class PptComponent implements OnInit {
   screenName!: string;
   screenData: any;
   ScreenOptions: any[] = [];
+
   isChecked = true;
   selectedFiles: File[] = [];
   fileRemoved = false;
+    // Subscription for HTTP requests
+    private sendSopDataSubscription: Subscription | undefined;
+  
   constructor(private dashService: DashService) {}
 
   ngOnInit() {
@@ -97,11 +102,45 @@ export class PptComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
     }
   }
+  // Log selected screen and interval, and send image data to the API
   logSelectedScreenAndInterval(): void {
-    const selectedScreen = this.screenControl.value?.name;
-    const selectedInterval = this.intervalControl.value;
+    const selectedScreen = this.screenControl.value;
+    const selectedInterval = this.intervalControl.value ?? 0;
   
-    console.log('Selected Screen:', this.screenControl.value);
+    if (selectedScreen === null || selectedScreen === undefined) {
+      console.error('Please select a valid screen.');
+      return;
+    }
+  
+    console.log('Selected Screen:', selectedScreen);
     console.log('Selected Interval:', selectedInterval);
+  
+    // Cancel any ongoing HTTP requests before making new ones
+    if (this.sendSopDataSubscription) {
+      this.sendSopDataSubscription.unsubscribe();
+    }
+  
+    // Iterate through each selected PDF and send a separate request
+    this.selectedFiles.forEach((ppt, index) => {
+      const pptData = {
+        fileName: ppt.name,
+        filePath: 'assets/uploads/ppt/' + ppt.name,
+        screen: selectedScreen.toString(),
+        duration: selectedInterval.toString(),
+      };
+  
+      console.log(pptData);
+  
+      // Send the data to your API endpoint as JSON
+      this.sendSopDataSubscription = this.dashService.sendSOPData(pptData).subscribe(
+        (response) => {
+          console.log(`SOP data ${index + 1} sent successfully:`, response);
+        },
+        (error) => {
+          console.error(`Error sending SOP data ${index + 1}:`, error);
+        }
+      );
+    });
   }
+  
 }

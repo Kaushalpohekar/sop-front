@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
+import { Subscription } from 'rxjs';
 
 interface Screen {
   name: string;
@@ -23,6 +24,10 @@ export class VideoComponent implements OnInit {
   isChecked = true;
   selectedFiles: File[] = [];
   fileRemoved = false;
+
+     // Subscription for HTTP requests
+     private sendSopDataSubscription: Subscription | undefined;
+  
   constructor(private dashService: DashService) {}
 
   ngOnInit() {
@@ -82,10 +87,42 @@ export class VideoComponent implements OnInit {
     return '';
   }
   logSelectedScreenAndInterval(): void {
-    const selectedScreen = this.screenControl.value?.name;
-    const selectedInterval = this.intervalControl.value;
+    const selectedScreen = this.screenControl.value;
+    const selectedInterval = this.intervalControl.value ?? 0;
   
-    console.log('Selected Screen:', this.screenControl.value);
+    if (selectedScreen === null || selectedScreen === undefined) {
+      console.error('Please select a valid screen.');
+      return;
+    }
+  
+    console.log('Selected Screen:', selectedScreen);
     console.log('Selected Interval:', selectedInterval);
+  
+    // Cancel any ongoing HTTP requests before making new ones
+    if (this.sendSopDataSubscription) {
+      this.sendSopDataSubscription.unsubscribe();
+    }
+  
+    // Iterate through each selected PDF and send a separate request
+    this.selectedFiles.forEach((video, index) => {
+      const videoData = {
+        fileName: video.name,
+        filePath: 'assets/uploads/videos/' + video.name,
+        screen: selectedScreen.toString(),
+        duration: selectedInterval.toString(),
+      };
+  
+      console.log(videoData);
+  
+      // Send the data to your API endpoint as JSON
+      this.sendSopDataSubscription = this.dashService.sendSOPData(videoData).subscribe(
+        (response) => {
+          console.log(`SOP data ${index + 1} sent successfully:`, response);
+        },
+        (error) => {
+          console.error(`Error sending SOP data ${index + 1}:`, error);
+        }
+      );
+    });
   }
 }
