@@ -15,4 +15,8 @@ export class ScreenService {
   getScreenDetails(): Observable<any> {
     return this.http.get(`${this.API_URL}/getAllScreens`);
   }
+  
+  getScreenDisplay(ScreenID: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/getSOPDataByScreenId/${ScreenID}`);
+  }
 }

@@ -25,15 +25,16 @@ export class VideoComponent implements OnInit {
   selectedFiles: File[] = [];
   fileRemoved = false;
 
-     // Subscription for HTTP requests
-     private sendSopDataSubscription: Subscription | undefined;
-  
+  // Subscription for HTTP requests
+  private sendVideoDataSubscription: Subscription | undefined;
+
   constructor(private dashService: DashService) {}
 
   ngOnInit() {
     this.ScreenList();
     this.ScreenDetails();
   }
+
   ScreenList() {
     this.dashService.getScreenDetails().subscribe(
       (getScreenDetails) => {
@@ -56,6 +57,7 @@ export class VideoComponent implements OnInit {
       }
     );
   }
+
   onFileSelected(event: Event): void {
     const files: FileList | null = (event.target as HTMLInputElement).files;
 
@@ -86,43 +88,54 @@ export class VideoComponent implements OnInit {
     // Example: return `/api/videos/${this.selectedFiles[index].name}`;
     return '';
   }
+
   logSelectedScreenAndInterval(): void {
     const selectedScreen = this.screenControl.value;
     const selectedInterval = this.intervalControl.value ?? 0;
-  
+
     if (selectedScreen === null || selectedScreen === undefined) {
       console.error('Please select a valid screen.');
       return;
     }
-  
+
     console.log('Selected Screen:', selectedScreen);
     console.log('Selected Interval:', selectedInterval);
-  
+
     // Cancel any ongoing HTTP requests before making new ones
-    if (this.sendSopDataSubscription) {
-      this.sendSopDataSubscription.unsubscribe();
+    if (this.sendVideoDataSubscription) {
+      this.sendVideoDataSubscription.unsubscribe();
     }
-  
-    // Iterate through each selected PDF and send a separate request
+
+    // Iterate through each selected video file and send a separate request
     this.selectedFiles.forEach((video, index) => {
-      const videoData = {
-        fileName: video.name,
-        filePath: 'assets/uploads/videos/' + video.name,
-        screen: selectedScreen.toString(),
-        duration: selectedInterval.toString(),
-      };
-  
-      console.log(videoData);
-  
-      // Send the data to your API endpoint as JSON
-      this.sendSopDataSubscription = this.dashService.sendSOPData(videoData).subscribe(
-        (response) => {
-          console.log(`SOP data ${index + 1} sent successfully:`, response);
-        },
-        (error) => {
-          console.error(`Error sending SOP data ${index + 1}:`, error);
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64Data = reader.result?.toString().split(',')[1];
+
+        if (base64Data) {
+          const videoData = {
+            fileName: video.name,
+            base64Data: base64Data,
+            screen: selectedScreen.toString(),
+            duration: selectedInterval.toString(),
+          };
+
+          console.log(videoData);
+
+          // Send the data to your API endpoint as JSON
+          this.sendVideoDataSubscription = this.dashService.sendSOPData(videoData).subscribe(
+            (response) => {
+              console.log(`Video data ${index + 1} sent successfully:`, response);
+            },
+            (error) => {
+              console.error(`Error sending video data ${index + 1}:`, error);
+            }
+          );
         }
-      );
+      };
+
+      reader.readAsDataURL(video);
     });
   }
 }

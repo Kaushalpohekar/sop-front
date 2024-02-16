@@ -12,7 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
-
+import { DisplayScreenComponent } from './display-screen/display-screen.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
     ScreenOverviewComponent,
     HeaderScreenComponent,
     FooterScreenComponent,
+    DisplayScreenComponent,
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,7 @@ import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
     MatButtonModule,
     MatCardModule,
     MatTabsModule,
+    NgxExtendedPdfViewerModule,
   ]
 })
 export class ScreensModule { }

@@ -1,0 +1,18 @@
+<!-- <div class="content display">
+  <div *ngIf="imageDataList.length > 0" class="image-container">
+    <div class="full-screen">
+      <img [src]="getImageSource()" alt="Full Screen Image" class="img-fluid">
+    </div>
+  </div>
+</div>
+ -->
+<div class="content display">
+  <div *ngIf="imageDataList.length > 0" class="image-container">
+    <div class="full-screen" [ngSwitch]="true">
+      <img *ngSwitchCase="isImageType()" [src]="getImageSource()" alt="Full Screen Image" class="img-fluid">
+      <ngx-extended-pdf-viewer *ngSwitchCase="isPdfType()" [src]="getImageSource()" type="application/pdf" class="full-screen-pdf"></ngx-extended-pdf-viewer>
+      <iframe *ngSwitchCase="isPptType()" [src]="getImageSource()" class="full-screen-ppt"></iframe>
+      <video *ngSwitchCase="isVideoType()" [src]="getImageSource()" controls autoplay class="full-screen-video"></video>
+    </div>
+  </div>
+</div>

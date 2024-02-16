@@ -1,4 +1,3 @@
-// ppt.component.ts
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
@@ -26,15 +25,16 @@ export class PptComponent implements OnInit {
   isChecked = true;
   selectedFiles: File[] = [];
   fileRemoved = false;
-    // Subscription for HTTP requests
-    private sendSopDataSubscription: Subscription | undefined;
-  
+  // Subscription for HTTP requests
+  private sendSopDataSubscription: Subscription | undefined;
+
   constructor(private dashService: DashService) {}
 
   ngOnInit() {
     this.ScreenList();
     this.ScreenDetails();
   }
+
   ScreenList() {
     this.dashService.getScreenDetails().subscribe(
       (getScreenDetails) => {
@@ -102,45 +102,66 @@ export class PptComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
     }
   }
+
+  resetForm(): void {
+    this.screenControl.reset();
+    this.intervalControl.reset();
+    this.selectedFiles = [];
+    this.fileRemoved = true;
+  }
+
   // Log selected screen and interval, and send image data to the API
   logSelectedScreenAndInterval(): void {
     const selectedScreen = this.screenControl.value;
     const selectedInterval = this.intervalControl.value ?? 0;
-  
+
     if (selectedScreen === null || selectedScreen === undefined) {
       console.error('Please select a valid screen.');
       return;
     }
-  
+
     console.log('Selected Screen:', selectedScreen);
     console.log('Selected Interval:', selectedInterval);
-  
+
     // Cancel any ongoing HTTP requests before making new ones
     if (this.sendSopDataSubscription) {
       this.sendSopDataSubscription.unsubscribe();
     }
-  
-    // Iterate through each selected PDF and send a separate request
+
+    // Iterate through each selected PowerPoint file and send a separate request
     this.selectedFiles.forEach((ppt, index) => {
-      const pptData = {
-        fileName: ppt.name,
-        filePath: 'assets/uploads/ppt/' + ppt.name,
-        screen: selectedScreen.toString(),
-        duration: selectedInterval.toString(),
-      };
-  
-      console.log(pptData);
-  
-      // Send the data to your API endpoint as JSON
-      this.sendSopDataSubscription = this.dashService.sendSOPData(pptData).subscribe(
-        (response) => {
-          console.log(`SOP data ${index + 1} sent successfully:`, response);
-        },
-        (error) => {
-          console.error(`Error sending SOP data ${index + 1}:`, error);
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64Data = reader.result?.toString().split(',')[1];
+
+        if (base64Data) {
+          const pptData = {
+            fileName: ppt.name,
+            base64Data: base64Data,
+            screen: selectedScreen.toString(),
+            duration: selectedInterval.toString(),
+          };
+
+          console.log(pptData);
+
+          // Send the data to your API endpoint as JSON
+          this.sendSopDataSubscription = this.dashService.sendSOPData(pptData).subscribe(
+            (response) => {
+              console.log(`SOP data ${index + 1} sent successfully:`, response);
+            },
+            (error) => {
+              console.error(`Error sending SOP data ${index + 1}:`, error);
+            },
+            () => {
+              // Reset the form after successful PowerPoint upload
+              this.resetForm();
+            }
+          );
         }
-      );
+      };
+
+      reader.readAsDataURL(ppt);
     });
   }
-  
 }

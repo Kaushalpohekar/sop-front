@@ -14,11 +14,11 @@
         <mat-error *ngIf="screenControl.hasError('required')">Please choose a screen</mat-error>
       </mat-form-field>
     </div>
-    <div class="col-md-2 offset-md-6">
+<!--     <div class="col-md-2 offset-md-6">
       <mat-slide-toggle [(ngModel)]="isChecked">
         Screen is: {{isChecked ? 'On' : 'Off'}}
       </mat-slide-toggle>
-    </div>
+    </div> -->
   </div>
   <div class="row scrollable-row row2">
     <input type="file" (change)="handleFileUpload($event)" multiple accept=".jpg, .jpeg, .png, .bmp">

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ScreenService } from '../screen-service/screen-service.service';
 @Component({
   selector: 'app-screen-overview',
@@ -10,7 +11,7 @@ export class ScreenOverviewComponent {
   
   ScreenOptions: any[] = [];
   
-  constructor(private dashService: ScreenService) {}
+  constructor(private dashService: ScreenService, private router: Router) {}
   ngOnInit(): void {
     this.ScreenList();
   }
@@ -37,6 +38,16 @@ ScreenList() {
       console.log("Screen Name Data is not Fetching!!", error);
     }
   );
+}
+
+navigateToScreen(screenId: string) {
+  // Check if screenId is defined before navigating
+  if (screenId) {
+    // Use the navigate method to navigate to the dynamic route with the selected screen ID
+    this.router.navigate(['/screens/display', screenId]);
+  } else {
+    console.error('Screen ID is undefined');
+  }
 }
 
 }

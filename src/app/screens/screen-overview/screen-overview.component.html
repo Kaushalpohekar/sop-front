@@ -12,7 +12,7 @@
                                     <img src="../../../assets/img/Computer-Screen-Transparent.png" style="height: 100px;" alt="Logo" class="mb-3">
 
                                     <!-- Button below the Logo, use data from backend for dynamic content -->
-                                    <button style="background-color: #000; color: white; border-radius: 10px ;" mat-raised-button>{{ screen.ScreenName }}</button>
+                                    <button style="background-color: #000; color: white; border-radius: 10px ;" mat-raised-button (click)="navigateToScreen(screen.ScreenID)">{{ screen.ScreenName }}</button>
                                 </div>
                             </div>
                         </div>
