@@ -5,13 +5,14 @@ import { LoginGuard } from './login/auth/login.guard';
 import { AuthGuard } from './login/auth/auth.guard';
 import { LayoutComponent } from './dashboard/layout/layout.component';
 import { ScreenLayoutComponent } from './screens/screen-layout/screen-layout.component';
+import { RoleGuard } from './login/auth/role.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     component: LoginLayoutComponent,
-    // canActivate: [LoginGuard],
+    canActivate: [LoginGuard],
     children: [
       { path: '', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
     ]
@@ -19,7 +20,8 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: LayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard,RoleGuard],
+    data: { roles: ['Admin'] },
     children: [
       { path: '', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
     ]
@@ -27,7 +29,8 @@ const routes: Routes = [
   {
     path: 'screens',
     component: ScreenLayoutComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard,RoleGuard],
+    data: { roles: ['Screen'] },
     children: [
       { path: '', loadChildren: () => import('./screens/screens.module').then(m => m.ScreensModule) },
     ]

@@ -91,9 +91,9 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('CompanyEmail');
+    sessionStorage.clear();
     this.isLoggedIn();
     this.router.navigate(['/login/login']);
+    window.location.reload();
   }
 }
