@@ -43,10 +43,13 @@ export class DashService {
   sendSOPData(sopData: any): Observable<any> {
     return this.http.post(`${this.API_URL}/InsertSOPData`, sopData);
   }
-  // copyFile(copyData: { sourcePath: string; destinationDirectory: string }): Observable<any> {
-  //   const copyUrl = `${this.API_URL}/copy-file`;
-
-  //   return this.http.post<any>(copyUrl, copyData);
-  // }
   
+  editScreen(element: any, ScreenData: any): Observable<any> {
+    const screenId = element.ScreenID;
+    return this.http.put(`${this.API_URL}/updateScreen/${screenId}`, ScreenData);
+  }
+
+  getScreenDisplay(ScreenID: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/getSOPDataByScreenId/${ScreenID}`);
+  }
 }

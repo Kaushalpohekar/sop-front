@@ -14,6 +14,7 @@ export class DisplayScreenComponent implements OnInit {
   public imageDataList: any[] = [];
   public currentImageDataIndex: number = 0;
 
+  pdfSrc = '../../assets/report_data.pdf';
   constructor(
     private route: ActivatedRoute,
     private screenService: ScreenService,
@@ -70,7 +71,8 @@ export class DisplayScreenComponent implements OnInit {
         return `data:${mimeType};base64,${currentImageData.Base64File.data}`;
 
       case 'application/pdf':
-        return `data:application/pdf;base64,${currentImageData.Base64File.data}`;
+        console.log(`data:${mimeType};base64,${currentImageData.Base64File.data}`);
+        return `data:${mimeType};base64,${currentImageData.Base64File.data}`;
 
       case 'application/vnd.ms-powerpoint':
       case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':

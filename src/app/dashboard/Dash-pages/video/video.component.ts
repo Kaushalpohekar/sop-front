@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
 import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface Screen {
   name: string;
@@ -16,7 +17,7 @@ export class VideoComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   screenControl = new FormControl<Screen | null>(null, Validators.required);
-  intervalControl = new FormControl<number | null>(null, Validators.required);
+  intervalControl = new FormControl<number | null>(5, Validators.required);
   screens: Screen[] = [];
   screenName!: string;
   screenData: any;
@@ -28,32 +29,28 @@ export class VideoComponent implements OnInit {
   // Subscription for HTTP requests
   private sendVideoDataSubscription: Subscription | undefined;
 
-  constructor(private dashService: DashService) {}
+  constructor(private dashService: DashService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.ScreenList();
-    this.ScreenDetails();
   }
 
   ScreenList() {
     this.dashService.getScreenDetails().subscribe(
       (getScreenDetails) => {
-        this.ScreenOptions = getScreenDetails.getSOPData;
-        console.log(this.ScreenOptions);
+        if (getScreenDetails.getSOPData && getScreenDetails.getSOPData.length > 0) {
+          this.ScreenOptions = getScreenDetails.getSOPData;
+        this.screenControl.setValue(this.ScreenOptions[0].ScreenID);
+        } else {
+          this.snackBar.open('No screen options available', 'OK', {
+            duration: 5000, // Duration in milliseconds
+          });
+        }
       },
       (error) => {
-        console.log("Screen Name Data is not Fetching!!", error);
-      }
-    );
-  }
-
-  ScreenDetails() {
-    this.dashService.getScreenDetails().subscribe(
-      (screens) => {
-        this.screenData = screens.getSOPData;
-      },
-      (error) => {
-        console.error('Error fetching screen details:', error);
+        this.snackBar.open('Error fetching screen data', 'OK', {
+          duration: 5000, // Duration in milliseconds
+        });
       }
     );
   }

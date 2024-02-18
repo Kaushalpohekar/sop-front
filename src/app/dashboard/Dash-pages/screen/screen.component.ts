@@ -6,11 +6,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DashService } from '../../dash-service/dash.service';
 import { FormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface PeriodicElement {
   ScreenName: string;
   position: number;
   symbol: string;
+  editMode?: boolean;
 }
 
 @Component({
@@ -22,12 +24,14 @@ export class ScreenComponent implements AfterViewInit, OnInit {
   dataSource = new MatTableDataSource<PeriodicElement>([]);
   displayedColumns: string[] = ['ScreenName', 'symbol'];
   screenData: any;
-  
+  editMode = false;
+
   ScreenOptions: any = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   screenName = new FormControl('', [Validators.required]);
+  screenNameEdit = new FormControl('', [Validators.required]);
 
-  constructor(private dashService: DashService) {}
+  constructor(private dashService: DashService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.ScreenDetails();
@@ -36,24 +40,17 @@ export class ScreenComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
-  ScreenList(){
-    this.dashService.getScreenDetails().subscribe(
-      (getScreenDetails) =>{
-        this.ScreenOptions = getScreenDetails.getAllScreens; 
-      },
-      (error) =>{
-        console.log("Tasksheet Data is not Fetching!!", error);
-      }
-    );
-  }
+
   ScreenDetails() {
     this.dashService.getScreenDetails().subscribe(
-      (screens) => {
-        this.screenData = screens.getSOPData;
-        console.log(this.screenData);
+      (getScreenDetails) => {
+        this.screenData = getScreenDetails.getSOPData;
       },
       (error) => {
-        console.error('Error fetching screen details:', error);
+        this.snackBar.open('Tasksheet Data is not Fetching!!', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
       }
     );
   }
@@ -75,7 +72,7 @@ export class ScreenComponent implements AfterViewInit, OnInit {
         },
         (error) => {
           console.error('Error adding screen:', error);
-  
+
           Swal.fire({
             title: 'Error',
             text: 'Failed to add screen. Please try again.',
@@ -84,9 +81,10 @@ export class ScreenComponent implements AfterViewInit, OnInit {
           });
         }
       );
+    } else {
+      this.screenName.markAsTouched();
     }
   }
-  
 
   deleteScreen(screen: any): void {
     if (screen.ScreenID) {
@@ -135,6 +133,48 @@ export class ScreenComponent implements AfterViewInit, OnInit {
           Swal.fire('Delete Canceled', 'Screen deletion canceled', 'info');
         }
       });
+    }
+  }
+
+  onEditScreen(element: PeriodicElement) {
+    this.screenData.forEach((item: PeriodicElement) => item.editMode = (item === element));
+    this.screenNameEdit.patchValue(element.ScreenName);
+  }
+
+  onCancelEdit(element: PeriodicElement) {
+    element.editMode = false;
+  }
+
+  onSaveEdit(element: PeriodicElement) {
+    element.editMode = false;
+
+    if (this.screenNameEdit.valid) {
+      const screenData = {
+        screenName: this.screenNameEdit.value
+      };
+
+      console.log(element);
+      this.dashService.editScreen(element, screenData).subscribe(
+        () => {
+          // Success
+          Swal.fire({
+            icon: 'success',
+            title: 'Screen Edited Successfully',
+            showConfirmButton: false,
+            timer: 1500 // Adjust the timer as needed
+          });
+          this.ScreenDetails();
+        },
+        (error) => {
+          // Error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error Editing Screen',
+            text: 'Please try again later.',
+          });
+          console.error('Error editing screen:', error);
+        }
+      );
     }
   }
 }

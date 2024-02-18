@@ -21,7 +21,12 @@
     </div> -->
   </div>
   <div class="row scrollable-row row2">
-    <input type="file" (change)="handleFileUpload($event)" multiple accept=".jpg, .jpeg, .png, .bmp">
+    <div class="col-md-2">
+      <p>Select Images</p>
+    </div>
+    <div class="col-md-10">
+      <input type="file" (change)="handleFileUpload($event)" multiple accept=".jpg, .jpeg, .png, .bmp">
+    </div>    
     <div class="image-grid mt-1" *ngIf="selectedImages.length > 0 && !imageRemoved">
       <div class="image-item" *ngFor="let image of selectedImages; let i = index">
         <img [src]="getSelectedImageUrl(i)" alt="Selected Image" class="selected-image">
@@ -41,7 +46,7 @@
       </mat-form-field>
     </div>
     <div class="col-md-2 offset-md-6">
-      <button class="btn" mat-raised-button color="warn">Delete</button>
+      <!-- <button class="btn" mat-raised-button color="warn">Delete</button> -->
       <button class="btn" mat-raised-button style="color: white; background-color: green;" (click)="logSelectedScreenAndInterval()">Save</button>
     </div>
   </div>

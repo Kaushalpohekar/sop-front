@@ -4,6 +4,7 @@ import { DashService } from '../../dash-service/dash.service';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface Screen {
   ScreenID: number;
@@ -20,14 +21,14 @@ interface Screen {
 })
 export class ImageComponent implements OnInit, OnDestroy {
   screenControl = new FormControl<number | null>(null, Validators.required);
-  intervalControl = new FormControl<number | null>(null, Validators.required);
+  intervalControl = new FormControl<number | null>(5, Validators.required);
   ScreenOptions: Screen[] = [];
   selectedImages: File[] = [];
   imageRemoved = false;
   isChecked = true;
   private sendImageSubscription: Subscription | undefined;
 
-  constructor(private dashService: DashService, private http: HttpClient, private ngZone: NgZone) {}
+  constructor(private dashService: DashService, private http: HttpClient, private ngZone: NgZone, private snackBar: MatSnackBar ) {}
 
   ngOnInit() {
     this.fetchScreenList();
@@ -40,10 +41,19 @@ export class ImageComponent implements OnInit, OnDestroy {
   fetchScreenList() {
     this.dashService.getScreenDetails().subscribe(
       (getScreenDetails) => {
-        this.ScreenOptions = getScreenDetails.getSOPData;
+        if (getScreenDetails.getSOPData && getScreenDetails.getSOPData.length > 0) {
+          this.ScreenOptions = getScreenDetails.getSOPData;
+        this.screenControl.setValue(this.ScreenOptions[0].ScreenID);
+        } else {
+          this.snackBar.open('No screen options available', 'OK', {
+            duration: 5000, // Duration in milliseconds
+          });
+        }
       },
       (error) => {
-        console.error("Screen Name Data is not Fetching!!", error);
+        this.snackBar.open('Error fetching screen data', 'OK', {
+          duration: 5000, // Duration in milliseconds
+        });
       }
     );
   }
@@ -84,9 +94,6 @@ export class ImageComponent implements OnInit, OnDestroy {
       console.error('Please select a valid screen.');
       return;
     }
-
-    console.log('Selected Screen:', selectedScreen);
-    console.log('Selected Interval:', selectedInterval);
 
     this.unsubscribeFromImageSubscription();
 
