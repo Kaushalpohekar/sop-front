@@ -52,4 +52,8 @@ export class DashService {
   getScreenDisplay(ScreenID: string): Observable<any> {
     return this.http.get(`${this.API_URL}/getSOPDataByScreenId/${ScreenID}`);
   }
+
+  deleteSOPData(FileName: string): Observable<any> {
+    return this.http.delete(`${this.API_URL}/deleteSOPData/${FileName}`);
+  }
 }

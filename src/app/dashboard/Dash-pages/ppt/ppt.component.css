@@ -47,3 +47,7 @@
     z-index: 1;
   }
   
+.alert{
+  color: red;
+  font-weight: 550;
+}

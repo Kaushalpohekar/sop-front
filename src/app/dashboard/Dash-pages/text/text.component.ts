@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashService } from '../../dash-service/dash.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-text',
@@ -14,6 +15,7 @@ export class TextComponent{
 
   ScreenOptions: any[] = [];
   screenData :any[] = [];
+  selectedScreenID: any; 
 
   ngOnInit(): void {
     this.fetchScreenList();
@@ -23,6 +25,8 @@ export class TextComponent{
     this.dashService.getScreenDetails().subscribe(
       (getScreenDetails) => {
         this.ScreenOptions = getScreenDetails.getSOPData;
+        this.selectedScreenID = this.ScreenOptions[0].ScreenID;
+        this.fetchScreenData(this.selectedScreenID);
       },
       (error) => {
         this.snackBar.open('Error fetching screen data', 'OK', {
@@ -33,25 +37,54 @@ export class TextComponent{
   }
 
   onSelectionChange(event: any): void {
-    const selectedScreenID = event.value;
-    console.log(selectedScreenID);
-    this.fetchScreenData(selectedScreenID);
+    this.selectedScreenID = event.value;
+    this.screenData = [];
+    this.fetchScreenData(this.selectedScreenID);
   }
 
   fetchScreenData(selectedScreenID: any) {
-    this.dashService.getScreenDisplay(selectedScreenID).subscribe(
-      (data: any) => {
-        this.screenData = data.data;
-        console.log(this.screenData);
-      },
-      (error) => {
-        console.log("error While Fetching tthe data ", error);
-      }
-    );
-  }
+  this.dashService.getScreenDisplay(selectedScreenID).subscribe(
+    (data: any) => {
+      this.screenData = data.data;
+    },
+    (error) => {
+      // Use MatSnackBar for displaying error messages
+      this.snackBar.open('Error fetching screen data', 'OK', {
+        duration: 5000, // Duration in milliseconds
+      });
+    }
+  );
+}
+
 
   getFullSrc(data:string, mime:string): string {
     const fullSrc = `data:${mime};base64,${data}`;
     return fullSrc;
+  }
+
+  isVideoType(mimeType: string): boolean {
+    return mimeType.startsWith('video/');
+  }
+  onDeleteSOPData(FileName: string): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this data!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dashService.deleteSOPData(FileName).subscribe(() => {
+          Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+          this.fetchScreenData(this.selectedScreenID);
+        }, (error) => {
+          Swal.fire('Error', 'Error while deleting data', 'error');
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Your data is safe.', 'info');
+        this.fetchScreenData(this.selectedScreenID);
+      }
+    });
   }
 }

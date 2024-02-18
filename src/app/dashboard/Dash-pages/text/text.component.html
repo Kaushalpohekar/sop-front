@@ -3,8 +3,8 @@
     <div class="col-10 mb-2">
       <h4 class="page-title m-1">Select Screen</h4>
       <mat-form-field appearance="outline">
-        <mat-label>Select</mat-label>
-        <mat-select (selectionChange)="onSelectionChange($event)">
+        <mat-label>Select Screen</mat-label>
+        <mat-select [(ngModel)]="selectedScreenID" (selectionChange)="onSelectionChange($event)">
           <mat-option *ngFor="let screen of ScreenOptions" [value]="screen.ScreenID">
             {{ screen.ScreenName }}
           </mat-option>
@@ -13,10 +13,38 @@
     </div>
   </div>
   <div class="row mb-2">
-    <div>
+    <ng-container *ngIf="screenData.length > 0 else noData">
       <div *ngFor="let screen of screenData" class="col-lg-3 col-md-3 col-sm-12 mb-2">
-        <img [src]="getFullSrc(screen.Base64File.data, screen.Base64File.mimeType)" alt="Full Screen Image" class="img-fluid">
+        <mat-card class="img-card">
+          <mat-card-content>
+            <div class="row mb-2">
+              <div class="col-12">
+                <!-- Check if MIME type is video -->
+                <ng-container *ngIf="isVideoType(screen.Base64File.mimeType)">
+                  <video controls class="img-col">
+                    <source [src]="getFullSrc(screen.Base64File.data, screen.Base64File.mimeType)" type="{{ screen.Base64File.mimeType }}">
+                    Your browser does not support the video tag.
+                  </video>
+                </ng-container>
+                <!-- If not a video, assume it's an image -->
+                <ng-container *ngIf="!isVideoType(screen.Base64File.mimeType)">
+                  <img [src]="getFullSrc(screen.Base64File.data, screen.Base64File.mimeType)" alt="Full Screen Image" class="img-col">
+                </ng-container>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12">
+                <button mat-raised-button class="button-delete" color="warn" (click)="onDeleteSOPData(screen.FileName)">Delete</button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
-    </div>
+    </ng-container>
   </div>
+  <ng-template #noData>
+    <div class="col-12">
+      <p>No data found for this screen.</p>
+    </div>
+  </ng-template>
 </div>
