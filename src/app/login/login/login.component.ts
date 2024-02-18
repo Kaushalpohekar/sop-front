@@ -54,10 +54,18 @@ export class LoginComponent {
         (response) => {
           const token = response.token;
           this.authService.setToken(token);
-          this.router.navigate(['dashboard']);
-          this.snackBar.open('Login successful!', 'Dismiss', {
-            duration: 2000
-          });
+          const checkUserType = () => {
+            const userType = this.authService.getUserType();
+            if (userType) {
+              this.redirectUser(userType);
+              this.snackBar.open('Login successful!', 'Dismiss', {
+                duration: 2000
+              });
+            } else {
+              setTimeout(checkUserType, 100);
+            }
+          };
+          checkUserType();
         },
         (error) => {
           this.snackBar.open(
@@ -70,6 +78,14 @@ export class LoginComponent {
           this.loadingMessage = "Sign In";
         }
       );
+    }
+  }
+
+  redirectUser(userType: string) {
+    if (userType === 'Admin') {
+      this.router.navigate(['/dashboard']);
+    } else if (userType === 'Screen') {
+      this.router.navigate(['/screens']);
     }
   }
 }

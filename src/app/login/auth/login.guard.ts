@@ -12,7 +12,15 @@ export class LoginGuard implements CanActivate {
   
   canActivate(): boolean {
     if (this.authService.isLoggedIn()) {
-        this.router.navigate(['/dashboard']);
+      const userType = this.authService.getUserType();
+      if (userType === 'Admin') {
+        this.router.navigate(['/dashboard/dashboard']);
+      } else if (userType === 'Screen') {
+        this.router.navigate(['/screens/screens']);
+      } else {
+        this.router.navigate(['/dashboard/dashboard']);
+      }
+      return false;
     }
     return true;
   }
