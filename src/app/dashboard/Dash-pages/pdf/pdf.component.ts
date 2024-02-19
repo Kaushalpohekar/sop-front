@@ -115,9 +115,6 @@ export class PdfComponent implements OnInit {
       return;
     }
 
-    console.log('Selected Screen:', selectedScreen);
-    console.log('Selected Interval:', selectedInterval);
-
     // Cancel any ongoing HTTP requests before making new ones
     if (this.sendSopDataSubscription) {
       this.sendSopDataSubscription.unsubscribe();
@@ -138,12 +135,10 @@ export class PdfComponent implements OnInit {
             duration: selectedInterval.toString(),
           };
 
-          console.log(pdfData);
-
           // Send the data to your API endpoint as JSON
           this.sendSopDataSubscription = this.dashService.sendSOPData(pdfData).subscribe(
             (response) => {
-              console.log(`SOP data ${index + 1} sent successfully:`, response);
+              // console.log(`SOP data ${index + 1} sent successfully:`, response);
             },
             (error) => {
               console.error(`Error sending SOP data ${index + 1}:`, error);

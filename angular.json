@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/orp-front",
+            "outputPath": "dist/SOP",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [

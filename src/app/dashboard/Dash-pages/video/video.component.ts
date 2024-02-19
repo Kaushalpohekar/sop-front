@@ -95,9 +95,6 @@ export class VideoComponent implements OnInit {
       return;
     }
 
-    console.log('Selected Screen:', selectedScreen);
-    console.log('Selected Interval:', selectedInterval);
-
     // Cancel any ongoing HTTP requests before making new ones
     if (this.sendVideoDataSubscription) {
       this.sendVideoDataSubscription.unsubscribe();
@@ -118,12 +115,10 @@ export class VideoComponent implements OnInit {
             duration: selectedInterval.toString(),
           };
 
-          console.log(videoData);
-
           // Send the data to your API endpoint as JSON
           this.sendVideoDataSubscription = this.dashService.sendSOPData(videoData).subscribe(
             (response) => {
-              console.log(`Video data ${index + 1} sent successfully:`, response);
+              // console.log(`Video data ${index + 1} sent successfully:`, response);
             },
             (error) => {
               console.error(`Error sending video data ${index + 1}:`, error);

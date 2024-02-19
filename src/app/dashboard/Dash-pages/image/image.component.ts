@@ -111,8 +111,6 @@ export class ImageComponent implements OnInit, OnDestroy {
             duration: selectedInterval.toString(),
           };
 
-          console.log(imageData);
-
           this.ngZone.run(() => {
             this.sendImageSubscription = this.dashService.sendImageData(imageData)
               .pipe(
@@ -121,7 +119,7 @@ export class ImageComponent implements OnInit, OnDestroy {
                   throw error;
                 }),
                 finalize(() => {
-                  console.log(`Image ${index + 1} data sent successfully.`);
+                  // console.log(`Image ${index + 1} data sent successfully.`);
                   // Reset the form after successful image upload
                   this.resetForm();
                 })

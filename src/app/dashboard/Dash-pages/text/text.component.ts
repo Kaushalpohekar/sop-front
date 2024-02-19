@@ -43,18 +43,18 @@ export class TextComponent{
   }
 
   fetchScreenData(selectedScreenID: any) {
-  this.dashService.getScreenDisplay(selectedScreenID).subscribe(
-    (data: any) => {
-      this.screenData = data.data;
-    },
-    (error) => {
-      // Use MatSnackBar for displaying error messages
-      this.snackBar.open('Error fetching screen data', 'OK', {
-        duration: 5000, // Duration in milliseconds
-      });
-    }
-  );
-}
+    this.dashService.getScreenDisplay(selectedScreenID).subscribe(
+      (data: any) => {
+        this.screenData = data.data;
+      },
+      (error) => {
+        // Use MatSnackBar for displaying error messages
+        this.snackBar.open('NO data Found for this Screen!', 'OK', {
+          duration: 5000, // Duration in milliseconds
+        });
+      }
+    );
+  }
 
 
   getFullSrc(data:string, mime:string): string {

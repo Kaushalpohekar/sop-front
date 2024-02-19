@@ -14,6 +14,8 @@ import { MatCardModule } from '@angular/material/card';
 import { DashboardRoutingModule } from '../dashboard/dashboard-routing.module';
 import { DisplayScreenComponent } from './display-screen/display-screen.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     MatCardModule,
     MatTabsModule,
     PdfViewerModule,
+    MatSnackBarModule
   ]
 })
 export class ScreensModule { }

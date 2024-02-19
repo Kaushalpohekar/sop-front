@@ -7,7 +7,7 @@ import { ScreenDisplayGuard } from './screen-service/screen-display.guard';
 
 const routes: Routes = [
   { path: 'screens', component: ScreenOverviewComponent},
-  { path: 'display/:screenId', component: DisplayScreenComponent},
+  { path: 'display/:screenId', canActivate: [ScreenDisplayGuard], component: DisplayScreenComponent},
   { path: '', redirectTo: 'screens', pathMatch: 'full' }
 ];
 

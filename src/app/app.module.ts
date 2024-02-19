@@ -4,16 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MqttModule, IMqttServiceOptions } from 'ngx-mqtt';
-
-
-const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
-  hostname: 'dashboard.senselive.in',
-  port: 9001,
-  protocol: 'ws',
-  username: 'Sense2023',
-  password: 'sense123'
-};
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -23,10 +14,11 @@ const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

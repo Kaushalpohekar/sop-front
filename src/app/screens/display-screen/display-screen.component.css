@@ -20,3 +20,13 @@
   max-height: 80vh;
   /* Add any other styles you may need for the image */
 }
+
+
+.no-data-message{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 1.5rem;
+  font-weight: 550;
+}

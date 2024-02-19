@@ -10,7 +10,7 @@ export class AuthService {
   token!: string | null;
 
   constructor(private http: HttpClient, private router: Router) {}
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = 'http://192.168.227.87:3000';
 
   login(loginData: any): Observable<any> {
     return this.http.post(`${this.API_URL}/login`, loginData);
@@ -91,9 +91,8 @@ export class AuthService {
   }
 
   logout(): void {
+    this.token = null;
     sessionStorage.clear();
-    this.isLoggedIn();
     this.router.navigate(['/login/login']);
-    window.location.reload();
   }
 }

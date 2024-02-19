@@ -7,14 +7,18 @@
 </div>
  -->
 <div class="content display">
-  <div *ngIf="imageDataList.length > 0" class="image-container">
+  <div *ngIf="imageDataList.length > 0; else noData" class="image-container">
     <div class="full-screen" [ngSwitch]="true">
       <img *ngSwitchCase="isImageType()" [src]="getImageSource()" alt="Full Screen Image" class="img-fluid">
       <div *ngSwitchCase="isPdfType()">
         <iframe [src]="getSafeUrl(getImageSource())" width="100%" height="500px" frameborder="0"></iframe>
       </div>
       <iframe *ngSwitchCase="isPptType()" [src]="getImageSource()" class="full-screen-ppt"></iframe>
-      <video *ngSwitchCase="isVideoType()" [src]="getImageSource()" controls autoplay class="full-screen-video"></video>
+      <video *ngSwitchCase="isVideoType()" [src]="getImageSource()" controls autoplay loop class="full-screen-video"></video>
     </div>
   </div>
+  <ng-template #noData>
+    <div class="no-data-message">No data found. Contact Administrator.</div>
+  </ng-template>
 </div>
+

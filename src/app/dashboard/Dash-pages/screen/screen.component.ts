@@ -101,7 +101,6 @@ export class ScreenComponent implements AfterViewInit, OnInit {
         if (result.isConfirmed) {
           this.dashService.deleteScreen(ScreenID).subscribe(
             () => {
-              console.log('Screen Deleted Successfully!!');
               Swal.fire({
                 title: 'Screen Deleted',
                 text: 'Screen deleted successfully!',
@@ -152,8 +151,6 @@ export class ScreenComponent implements AfterViewInit, OnInit {
       const screenData = {
         screenName: this.screenNameEdit.value
       };
-
-      console.log(element);
       this.dashService.editScreen(element, screenData).subscribe(
         () => {
           // Success

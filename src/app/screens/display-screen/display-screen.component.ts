@@ -35,7 +35,6 @@ export class DisplayScreenComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-          console.log(data);
           if (data && data.data && data.data.length > 0) {
             this.imageDataList = data.data;
             this.showFullScreenImage();
@@ -71,7 +70,6 @@ export class DisplayScreenComponent implements OnInit {
         return `data:${mimeType};base64,${currentImageData.Base64File.data}`;
 
       case 'application/pdf':
-        console.log(`data:${mimeType};base64,${currentImageData.Base64File.data}`);
         return `data:${mimeType};base64,${currentImageData.Base64File.data}`;
 
       case 'application/vnd.ms-powerpoint':
