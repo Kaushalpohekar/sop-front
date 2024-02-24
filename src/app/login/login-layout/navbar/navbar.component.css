@@ -1,12 +1,26 @@
 mat-toolbar-row{
-    justify-content:center;}
-  h2{
-  color: black;
-  }
-  mat-toolbar{
-    background: linear-gradient(45deg, rgb(247, 247, 135),#ff0600);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    height: fit-content;
-  }
+  justify-content:center;
+}
+
+h2{
+color: black;
+}
+
+mat-toolbar{
+  background: linear-gradient(45deg, rgb(247, 247, 135),#ff0600);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: fit-content;
+  justify-content: space-between;
+}
+
+.right-side button{
+  background-color: whitesmoke;
+  color: #eb3636;
+}
+
+.right-button button:hover{
+  background: whitesmoke;
+  color: #eb3636;
+}

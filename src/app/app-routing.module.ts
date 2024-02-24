@@ -29,8 +29,6 @@ const routes: Routes = [
   {
     path: 'screens',
     component: ScreenLayoutComponent,
-    canActivate: [AuthGuard,RoleGuard],
-    data: { roles: ['Screen'] },
     children: [
       { path: '', loadChildren: () => import('./screens/screens.module').then(m => m.ScreensModule) },
     ]

@@ -1,11 +1,17 @@
 <mat-toolbar class="color-temp container-fluid">
-    <div >
-      <ul class="nav">
-        <li class="nav-item px-1  w-10">
-          <a class="navbar-brand  h-10" href="#">
-            <img src="assets/img/elkem-logo.png" alt="Senselive" width="auto" height="60" class="d-inline-block align-text-top">
-          </a>
-        </li>
-      </ul>
+  <ul class="nav left-side">
+    <li class="nav-item px-1  w-10">
+      <a class="navbar-brand  h-10" href="#">
+        <img src="assets/img/elkem-logo.png" alt="Senselive" width="auto" height="60" class="d-inline-block align-text-top">
+      </a>
+    </li>
+  </ul>
+
+  <div class="right-side">
+    <div class="screen-button">
+      <button mat-mini-fab (click)="screens()" class="menu-item" color="basic" aria-label="screen-button">
+        <mat-icon> screen_share</mat-icon>
+      </button>
     </div>
+  </div>
 </mat-toolbar>
