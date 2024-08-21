@@ -1,53 +1,107 @@
 /* Buttons */
 .btn {
-    margin: 2px;
-    margin-top: 60px;
-  }
-  
-  /* Image Grid */
-  .image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
-  }
-  
-  .image-item {
-    position: relative;
-  }
-  
-  /* Selected Image */
-  .selected-image {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  /* General Styling */
-  .container-fluid {
-    height:fit-content; /* Set container height to viewport height */
-    overflow-y: hidden; /* Hide vertical scrollbar for the entire container */
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .fixed-row {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    margin-top: 60px;
-    background-color: #fff; /* Adjust background color as needed */
-  }
-  
-  
-  
-  /* Add styling for the third row if needed */
-  .row3 {
-    background-color: #fff; /* Adjust background color as needed */
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
-  }
-  
-.alert{
+  margin: 2px;
+  margin-top: 60px;
+}
+
+/* Image Grid */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.image-item {
+  position: relative;
+}
+
+/* Selected Image */
+.selected-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* General Styling */
+.container-fluid {
+  height: fit-content;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fixed-row {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin-top: 60px;
+  background-color: #fff;
+}
+
+.row3 {
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+.alert {
   color: red;
   font-weight: 550;
+}
+
+/* Table Styling */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 550;
+}
+
+.table-container tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table-container tr:hover {
+  background-color: #ddd;
+}
+
+.table-container th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #ac5454;
+  color: white;
+}
+
+.content-title{
+  font-size: 1rem;
+  font-weight: 550;
+}
+
+.content-title-ad {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 550;
+  cursor: pointer;
+  padding: 5px; /* Adjust padding for button size */
+  background-color: #4083e9; /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 0.25rem; /* Rounded corners */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline if it's a link */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.content-title-ad:hover {
+  background-color: #0056b3;
+}
+
+.content-title-ad:active {
+  background-color: #004080;
 }

@@ -19,4 +19,8 @@ export class ScreenService {
   getScreenDisplay(ScreenID: string): Observable<any> {
     return this.http.get(`${this.API_URL}/getSOPDataByScreenId/${ScreenID}`);
   }
+
+  getScreenTextData(ScreenID: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/getAllTextData/${ScreenID}`);
+  }
 }

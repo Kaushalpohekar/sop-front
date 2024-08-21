@@ -1,11 +1,29 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
-import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface Screen {
-  name: string;
+  ScreenID: number;
+  ScreenName: string;
+}
+
+interface ContentData {
+  contentDataId: string;
+  raw_material: string;
+  value: string;
+  highlight: number;
+}
+
+interface Content {
+  contentId: string;
+  screenId: string;
+  header: string;
+  subheader: string;
+  font_size: string;
+  color: string;
+  interval: number;
+  data: ContentData[];
 }
 
 @Component({
@@ -14,25 +32,56 @@ interface Screen {
   styleUrls: ['./ppt.component.css']
 })
 export class PptComponent implements OnInit {
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; // Reference to the file input element
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   screenControl = new FormControl<Screen | null>(null, Validators.required);
   intervalControl = new FormControl<number | null>(5, Validators.required);
   screens: Screen[] = [];
-  screenName!: string;
-  screenData: any;
-  ScreenOptions: any[] = [];
-
+  ScreenOptions: Screen[] = [];
   isChecked = true;
   selectedFiles: File[] = [];
-  fileRemoved = false;
-  // Subscription for HTTP requests
-  private sendSopDataSubscription: Subscription | undefined;
+  hasContentAdd: boolean = true; // Indicates if we are adding new content
+  isEditing: boolean = false; // Indicates if we are editing content
+  newRow: Content = this.initializeContent();
+  isDataEditing: boolean = false; // Indicates if we are editing data rows
+  newDataRow: ContentData = this.initializeContentData();
 
-  constructor(private dashService: DashService, private snackBar: MatSnackBar) {}
+  data: Content[] = []; // For headers and subheaders
+  displayedColumns: string[] = ['header', 'subheader', 'color', 'font_size', 'interval', 'action'];
+  data2: ContentData[] = []; // For detailed content data
+  displayedColumns2: string[] = ['srNo', 'rawMaterial', 'value', 'highlight', 'action'];
+
+  constructor(private dashService: DashService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.ScreenList();
+    this.screenControl.valueChanges.subscribe((selectedScreen) => {
+      if (selectedScreen) {
+        this.getAllTextData(selectedScreen);
+      }
+    });
+  }
+
+  initializeContent(): Content {
+    return {
+      contentId: '',
+      screenId: '',
+      header: '',
+      subheader: '',
+      font_size: '',
+      color: '#ffffff',
+      interval: 0,
+      data: []
+    };
+  }
+
+  initializeContentData(): ContentData {
+    return {
+      contentDataId: '',
+      raw_material: '',
+      value: '',
+      highlight: 0
+    };
   }
 
   ScreenList() {
@@ -40,121 +89,160 @@ export class PptComponent implements OnInit {
       (getScreenDetails) => {
         if (getScreenDetails.getSOPData && getScreenDetails.getSOPData.length > 0) {
           this.ScreenOptions = getScreenDetails.getSOPData;
-        this.screenControl.setValue(this.ScreenOptions[0].ScreenID);
+          this.screenControl.setValue(this.ScreenOptions[0]);
         } else {
-          this.snackBar.open('No screen options available', 'OK', {
-            duration: 5000, // Duration in milliseconds
-          });
+          this.snackBar.open('No screen options available', 'OK', { duration: 5000 });
         }
       },
       (error) => {
-        this.snackBar.open('Error fetching screen data', 'OK', {
-          duration: 5000, // Duration in milliseconds
-        });
+        this.snackBar.open('Error fetching screen data', 'OK', { duration: 5000 });
       }
     );
   }
 
-
-  onFileSelected(event: Event): void {
-    const files: FileList | null = (event.target as HTMLInputElement).files;
-
-    if (files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        this.selectedFiles.push(files[i]);
-      }
-
-      this.fileRemoved = false;
-    }
-  }
-
-  removeFile(index: number): void {
-    this.selectedFiles.splice(index, 1);
-
-    if (this.selectedFiles.length === 0) {
-      this.fileRemoved = true;
-      this.resetFileInput(); // Reset the file input
-    }
-  }
-
-  getSelectedFileUrl(index: number): string | null {
-    return this.isPpt(this.selectedFiles[index])
-      ? this.getPptFileUrl(this.selectedFiles[index])
-      : null;
-  }
-
-  isPpt(file: File): boolean {
-    return file.type === 'application/vnd.ms-powerpoint' ||
-           file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
-  }
-
-  private getPptFileUrl(file: File): string {
-    // Logic to generate PPT file URL dynamically
-    // Example: return `/api/ppt/${file.name}`;
-    return '';
-  }
-
-  resetFileInput(): void {
-    // Reset the file input value to clear the selected file
-    if (this.fileInput) {
-      this.fileInput.nativeElement.value = '';
-    }
-  }
-
-  resetForm(): void {
-    this.screenControl.reset();
-    this.intervalControl.reset();
-    this.selectedFiles = [];
-    this.fileRemoved = true;
-  }
-
-  // Log selected screen and interval, and send image data to the API
-  logSelectedScreenAndInterval(): void {
-    const selectedScreen = this.screenControl.value;
-    const selectedInterval = this.intervalControl.value ?? 0;
-
-    if (selectedScreen === null || selectedScreen === undefined) {
-      console.error('Please select a valid screen.');
-      return;
-    }
-
-    // Cancel any ongoing HTTP requests before making new ones
-    if (this.sendSopDataSubscription) {
-      this.sendSopDataSubscription.unsubscribe();
-    }
-
-    // Iterate through each selected PowerPoint file and send a separate request
-    this.selectedFiles.forEach((ppt, index) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const base64Data = reader.result?.toString().split(',')[1];
-
-        if (base64Data) {
-          const pptData = {
-            fileName: ppt.name,
-            base64Data: base64Data,
-            screen: selectedScreen.toString(),
-            duration: selectedInterval.toString(),
-          };
-
-          // Send the data to your API endpoint as JSON
-          this.sendSopDataSubscription = this.dashService.sendSOPData(pptData).subscribe(
-            (response) => {
-              // console.log(`SOP data ${index + 1} sent successfully:`, response);
-            },
-            (error) => {
-              console.error(`Error sending SOP data ${index + 1}:`, error);
-            },
-            () => {
-              // Reset the form after successful PowerPoint upload
-              this.resetForm();
-            }
-          );
+  getAllTextData(screen: Screen) {
+    this.data = [];
+    this.data2 = [];
+    this.dashService.getTextData(screen.ScreenID).subscribe(
+      (response: any) => {
+        if (response && response.length > 0) {
+          this.hasContentAdd = false;
+          const content = response[0];
+          this.data = [{
+            contentId: content.contentId,
+            screenId: content.screenId,
+            header: content.header,
+            subheader: content.subheader,
+            font_size: content.font_size,
+            color: content.color,
+            interval: content.interval,
+            data: content.data
+          }];
+          this.data2 = content.data;
+        } else {
+          this.hasContentAdd = true;
+          this.data = [];
+          this.data2 = [];
         }
+      },
+      (error) => {
+        console.error(error);
+        this.hasContentAdd = true;
+        this.snackBar.open('Error fetching text data', 'OK', { duration: 5000 });
+      }
+    );
+  }
+
+  addNewRow() {
+    this.isEditing = true;
+    this.newRow = this.initializeContent();
+    this.newRow.screenId = this.screenControl.value?.ScreenID.toString() ?? '';
+    this.data = [this.newRow];
+    this.data2 = [];
+    this.hasContentAdd = true;
+  }
+
+  addNewDataRow() {
+    this.isDataEditing = true;
+    this.newDataRow = this.initializeContentData();
+    this.data2 = [...this.data2, this.newDataRow];
+  }
+
+  editRow(element: Content) {
+    this.isEditing = true;
+    this.newRow = { ...element };
+    this.data = [this.newRow];
+    this.data2 = this.newRow.data;
+    this.hasContentAdd = false;
+  }
+
+  editDataRow(element: ContentData) {
+    this.isDataEditing = true;
+    this.newDataRow = { ...element };
+    // Convert number to boolean for UI use
+    this.newDataRow.highlight = element.highlight === 1 ? 1 : 0;  // Ensure it's a number
+    console.log(this.newDataRow);  // Check the value in the console
+  }
+
+  saveRow() {
+    if (this.isEditing) {
+      const payload: Content = {
+        ...this.newRow,
+        screenId: this.screenControl.value?.ScreenID.toString() ?? '',
+        data: this.data2
       };
 
-      reader.readAsDataURL(ppt);
-    });
+      if (this.hasContentAdd) {
+        this.dashService.InsertSOPTextData(payload).subscribe(
+          (response) => {
+            this.snackBar.open('Data inserted successfully', 'OK', { duration: 5000 });
+            this.getAllTextData(this.screenControl.value!);
+            this.isEditing = false;
+          },
+          (error) => {
+            this.snackBar.open('Error inserting data', 'OK', { duration: 5000 });
+          }
+        );
+      } else {
+        this.dashService.UpdateSOPTextData(payload).subscribe(
+          (response) => {
+            this.snackBar.open('Data updated successfully', 'OK', { duration: 5000 });
+            this.getAllTextData(this.screenControl.value!);
+            this.isEditing = false;
+          },
+          (error) => {
+            this.snackBar.open('Error updating data', 'OK', { duration: 5000 });
+          }
+        );
+      }
+    }
+  }
+
+  saveDataRow() {
+    if (this.isDataEditing) {
+      const payload = {
+        ...this.newDataRow,
+        contentId: this.data[0]?.contentId ?? '',
+        highlight: this.newDataRow.highlight ? 1 : 0
+      };
+
+      if (this.newDataRow.contentDataId) {
+        this.updateDataRow(payload);
+      } else {
+        this.insertDataRow(payload);
+      }
+    }
+  }
+
+  updateDataRow(payload: ContentData) {
+    this.dashService.UpdateSOPTextContentData(payload).subscribe(
+      (response) => {
+        this.snackBar.open('Data updated successfully', 'OK', { duration: 5000 });
+        this.getAllTextData(this.screenControl.value!);
+        this.isDataEditing = false;
+      },
+      (error) => {
+        this.snackBar.open('Error updating data', 'OK', { duration: 5000 });
+      }
+    );
+  }
+
+  insertDataRow(payload: ContentData) {
+    this.dashService.InsertSOPTextContentData(payload).subscribe(
+      (response) => {
+        this.snackBar.open('Data inserted successfully', 'OK', { duration: 5000 });
+        this.getAllTextData(this.screenControl.value!);
+        this.isDataEditing = false;
+      },
+      (error) => {
+        this.snackBar.open('Error inserting data', 'OK', { duration: 5000 });
+      }
+    );
+  }
+
+  cancel() {
+    this.hasContentAdd = false;
+    this.isEditing = false;
+    this.isDataEditing = false;
   }
 }

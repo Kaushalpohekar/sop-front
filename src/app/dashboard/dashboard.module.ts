@@ -28,7 +28,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ScreenListComponent } from './Dash-pages/screen-list/screen-list.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -63,7 +63,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NgxExtendedPdfViewerModule,
     MatSlideToggleModule,
     MatPaginatorModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCheckboxModule
   ]
 })
 export class DashboardModule { }

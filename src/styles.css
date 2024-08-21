@@ -9,6 +9,59 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
     padding-bottom: 40px;
 }
 
+.custom-form-input input[type="text"],
+.custom-form-input input[type="email"],
+.custom-form-input input[type="password"],
+.custom-form-input input[type="number"],
+.custom-form-input input[type="date"],
+.custom-form-input input[type="time"],
+.custom-form-input input[type="tel"],
+.custom-form-input textarea,
+.custom-form-input select,
+.custom-form-input input[type="radio"],
+.custom-form-input input[type="checkbox"],
+.custom-form-input select[multiple] {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 0.8rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #ffffff;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.custom-form-input input:hover,
+.custom-form-input textarea:hover,
+.custom-form-input select:hover,
+.custom-form-input input[type="radio"]:hover,
+.custom-form-input input[type="checkbox"]:hover,
+.custom-form-input input[type="date"]:hover,
+.custom-form-input input[type="time"]:hover,
+.custom-form-input input[type="tel"]:hover {
+  border-color: #b3b3b3;
+}
+
+.custom-form-input input:focus,
+.custom-form-input textarea:focus,
+.custom-form-input select:focus,
+.custom-form-input input[type="radio"]:focus,
+.custom-form-input input[type="checkbox"]:focus,
+.custom-form-input input[type="date"]:focus,
+.custom-form-input input[type="time"]:focus,
+.custom-form-input input[type="tel"]:focus {
+  border-color: #7891c7;
+  box-shadow: 0 0 0 3px rgba(225, 227, 230, 0.2);
+  outline: none;
+}
+
+.custom-form-input input:active,
+.custom-form-input textarea:active,
+.custom-form-input select:active,
+.custom-form-input input[type="radio"]:active,
+.custom-form-input input[type="checkbox"]:active,
+.custom-form-input input[type="date"]:active,
+.custom-form-input input[type="time"]:active,
+.custom-form-input input[type="tel"]:active {
+  border-color: #7891c7;
+}

@@ -1,24 +1,46 @@
-<!-- <div class="content display">
-  <div *ngIf="imageDataList.length > 0" class="image-container">
-    <div class="full-screen">
-      <img [src]="getImageSource()" alt="Full Screen Image" class="img-fluid">
-    </div>
+<!-- Display text content only if there's textData -->
+<div class="content container" *ngIf="showText">
+  <div class="row pt-2 mb-2" *ngIf="textData && textData.length;">
+    <div class="col-12" *ngFor="let item of textData">
+      <div class="header text-center" [ngStyle]="{'font-size': '2em'}">{{ item.header }}</div>
+      <div class="subheader text-center" [ngStyle]="{'font-size': '1.5em'}">{{ item.subheader }}</div>
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Raw Material</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of item.data">
+            <td [ngStyle]="{
+              'color': data.highlight === 1 ? item.color : 'inherit',
+              'font-family': item.font || 'inherit',
+              'font-size': (item.font_size || '16') + 'px'
+            }">{{ data.raw_material }}</td>
+            <td [ngStyle]="{
+              'color': data.highlight === 1 ? item.color : 'inherit',
+              'font-family': item.font || 'inherit',
+              'font-size': (item.font_size || '16') + 'px'
+            }">{{ data.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>   
   </div>
-</div>
- -->
-<div class="content display">
-  <div *ngIf="imageDataList.length > 0; else noData" class="image-container">
-    <div class="full-screen" [ngSwitch]="true">
-      <img *ngSwitchCase="isImageType()" [src]="getImageSource()" alt="Full Screen Image" class="img-fluid">
-      <div *ngSwitchCase="isPdfType()">
-        <iframe [src]="getSafeUrl(getImageSource())" width="100%" height="500px" frameborder="0"></iframe>
-      </div>
-      <iframe *ngSwitchCase="isPptType()" [src]="getImageSource()" class="full-screen-ppt"></iframe>
-      <video *ngSwitchCase="isVideoType()" [src]="getImageSource()" controls autoplay loop class="full-screen-video"></video>
-    </div>
-  </div>
-  <ng-template #noData>
-    <div class="no-data-message">No data found. Contact Administrator.</div>
-  </ng-template>
 </div>
 
+<!-- Display media content only if there's imageDataList -->
+<div class="content display" *ngIf="showMedia">
+  <div *ngIf="imageDataList.length > 0;" class="image-container">
+    <div class="full-screen">
+      <img *ngIf="isImageType()" [src]="getImageSource()" [ngClass]="{'fade-in': animate, 'fade-out': !animate}" alt="Full Screen Image" class="img-fluid">
+      <video *ngIf="isVideoType()" [src]="getImageSource()" [ngClass]="{'fade-in': animate, 'fade-out': !animate}" controls autoplay class="full-screen-video" (ended)="moveToNextContent()"></video>             
+    </div>
+  </div>
+</div>
+
+<!-- Show general no data message if no text or media data -->
+<div *ngIf="!showText && !showMedia">
+  <div class="no-data-message">No data found. Contact Administrator.</div>
+</div>

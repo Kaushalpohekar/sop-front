@@ -56,4 +56,24 @@ export class DashService {
   deleteSOPData(FileName: string): Observable<any> {
     return this.http.delete(`${this.API_URL}/deleteSOPData/${FileName}`);
   }
+  
+  getTextData(screenId: number) {
+    return this.http.get(`${this.API_URL}/getAllTextData/${screenId}`);
+  }
+
+  InsertSOPTextData(data: any) {
+    return this.http.post(`${this.API_URL}/InsertSOPTextData`, data);
+  }
+
+  UpdateSOPTextData(data: any) {
+    return this.http.put(`${this.API_URL}/UpdateSOPTextData`, data);
+  }
+
+  InsertSOPTextContentData(data: any){
+    return this.http.post(`${this.API_URL}/InsertSOPTextContentData`, data)
+  }
+
+  UpdateSOPTextContentData(data: any){
+    return this.http.put(`${this.API_URL}/UpdateSOPTextContentData`, data)
+  }
 }
