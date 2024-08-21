@@ -10,8 +10,8 @@ export class DashService {
 
   
   constructor(private http: HttpClient, private router: Router) {}
-  //private readonly API_URL = 'http://192.168.0.158:4000';
-  private readonly API_URL = 'http://localhost:4000';
+  private readonly API_URL = 'http://192.168.0.158:4000';
+  // private readonly API_URL = 'http://localhost:4000';
 
   public showMenu = false;
   public pageLoading = true;

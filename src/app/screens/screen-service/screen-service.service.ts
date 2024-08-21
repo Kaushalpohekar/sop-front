@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class ScreenService {
 
   constructor(private http: HttpClient, private router: Router) {}
-  //private readonly API_URL = 'http://192.168.0.158:4000';
-  private readonly API_URL = 'http://localhost:4000';
+  private readonly API_URL = 'http://192.168.0.158:4000';
+  //private readonly API_URL = 'http://localhost:4000';
   
   getScreenDetails(): Observable<any> {
     return this.http.get(`${this.API_URL}/getAllScreens`);
