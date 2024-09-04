@@ -206,12 +206,14 @@ export class PptComponent implements OnInit {
         highlight: this.newDataRow.highlight ? 1 : 0
       };
 
-      console.log("New data", payload);
+      
 
       if (this.newDataRow.contentDataId) {
         this.updateDataRow(payload);
+        console.log("previous Data", payload);
       } else {
         this.insertDataRow(payload);
+        console.log("New data Inserting", payload);
       }
     }
   }
