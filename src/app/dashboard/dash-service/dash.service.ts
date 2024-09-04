@@ -77,4 +77,9 @@ export class DashService {
   UpdateSOPTextContentData(data: any){
     return this.http.put(`${this.API_URL}/UpdateSOPTextContentData`, data)
   }
+  DeleteSOPTextContentData(contentDataId: string) {
+    return this.http.delete(`${this.API_URL}/DeleteSOPTextContentData/${contentDataId}`);
+  }
+  
+
 }

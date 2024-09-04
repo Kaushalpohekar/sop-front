@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { DashService } from '../../dash-service/dash.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import Swal from 'sweetalert2';
 
 interface Screen {
   ScreenID: number;
@@ -32,6 +33,7 @@ interface Content {
   styleUrls: ['./ppt.component.css']
 })
 export class PptComponent implements OnInit {
+
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   screenControl = new FormControl<Screen | null>(null, Validators.required);
@@ -163,6 +165,62 @@ export class PptComponent implements OnInit {
     this.newDataRow.highlight = element.highlight === 1 ? 1 : 0;  // Ensure it's a number
     console.log(this.newDataRow);  // Check the value in the console
   }
+
+  deleteDataRow(element: ContentData) {
+    if (element.contentDataId) {
+      const contentDataId = element.contentDataId;
+      console.log(contentDataId);
+  
+      Swal.fire({
+        title: 'Delete Data Row',
+        text: 'Are you sure you want to delete this data row?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete',
+        cancelButtonText: 'No, cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Call the delete service function if confirmed
+          this.dashService.DeleteSOPTextContentData(contentDataId).subscribe(
+            () => {
+              Swal.fire({
+                title: 'Data Row Deleted',
+                text: 'Data row deleted successfully!',
+                icon: 'success',
+                confirmButtonText: 'Ok',
+              }).then(() => {
+                // Refresh the data after deletion
+                this.getAllTextData(this.screenControl.value!);
+              });
+            },
+            (error) => {
+              console.error('Error deleting data row:', error);
+  
+              let errorMessage = 'An unexpected error occurred.';
+              if (error.status === 401) {
+                errorMessage = 'Unauthorized access. Please log in.';
+              } else if (error.status === 404) {
+                errorMessage = 'Data row not found.';
+              }
+  
+              // Show error message if deletion fails
+              Swal.fire({
+                title: 'Error',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonText: 'Ok',
+              });
+            }
+          );
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Display cancellation message
+          Swal.fire('Delete Canceled', 'Data row deletion canceled', 'info');
+        }
+      });
+    }
+  }
+  
+
 
   saveRow() {
     if (this.isEditing) {
